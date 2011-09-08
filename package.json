@@ -1,5 +1,5 @@
 {
-  "name": "node-example",
+  "name": "flowd",
   "version": "0.0.1",
   "dependencies": {
     "express": "2.2.0",
