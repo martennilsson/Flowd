@@ -70,7 +70,7 @@ Flowd.start = (function() {
 	var pollForMessages = function(){
 		setInterval(function(){
 			// console.log("polling");
-			getMessages(cookie);
+			getMessages();
 		}, process.env.UPDATE_INTERVAL || config.updateInterval || 3000);
 	};
 
@@ -78,7 +78,7 @@ Flowd.start = (function() {
 		return (availableCommands.indexOf(c) >= 0);
 	};
 	
-	var getMessages = function(cookie){
+	var getMessages = function() {
 			var refreshTime = new Date().getTime();
 			var totalData = "";
 			var getMessageOptions = {
