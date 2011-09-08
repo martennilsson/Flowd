@@ -114,7 +114,7 @@ Flowd.start = (function() {
 			if (message.event != 'message'){
 				return;
 			}
-			var match = message.content.match(/^Bot,?\s(\w*)\s?(.*)/);
+			var match = message.content.match(/^Bot,?\s(\w*)\s?(.*)/i);
 			// console.log("match: "+match);
 			if(match && match.length > 1 && availableCommand(match[1])){
 				var args = "";
