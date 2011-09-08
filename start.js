@@ -134,7 +134,7 @@ Flowd.start = (function() {
 			app: "chat",
 			channel: "/flows/" +config.flowname,
 			"event": "message",
-			message: "\""+message+"\"",
+			message: '"' + message.replace(/\n/g, '\\n').replace() + '"',
 			"private": "false",
 			tags: ""
 		};
