@@ -33,7 +33,7 @@ Flowd.start = (function() {
 		headers:{
 			"Connection": "keep-alive"
 		}
-	}
+	};
 	
 	var cookie;
 	var updateInterval = config.updateInterval;
@@ -49,7 +49,7 @@ Flowd.start = (function() {
 			availableCommands.push(command);
 			commands += "var "+command + "= require('"+command+"');";
 		}
-	};
+	}
 	eval(commands);
 		
 	var auth = function(){
@@ -64,7 +64,7 @@ Flowd.start = (function() {
 		req.on('error', function(e) {
 			console.error(e);
 		});
-	}
+	};
 	
 	//this is the main loop
 	var pollForMessages = function (cookie){
@@ -107,18 +107,20 @@ Flowd.start = (function() {
 	var parseMessages = function (json, callback) {
 		for(var i = 0; i < json.length; i++){
 			var message = json[i];
-			if(message['sent'] > last_sent_at ){
-				last_sent_at = message['sent'];
+			if(message.sent > last_sent_at ){
+				last_sent_at = message.sent;
 			}
 
-			if (message['event'] != 'message'){
+			if (message.event != 'message'){
 				return;
 			}
-			var match = message['content'].match(/^Bot,?\s(\w*)\s?(.*)/);
+			var match = message.content.match(/^Bot,?\s(\w*)\s?(.*)/);
 			// console.log("match: "+match);
 			if(match && match.length > 1 && availableCommand(match[1])){
 				var args = "";
-				if (match.length > 2){args = match[2]}
+				if (match.length > 2) {
+                    args = match[2];
+                }
 				var parsedCommand = match[1];
 				// console.log("parsedCommand: <"+parsedCommand+ "> with args: '"+args+"'");
 				botResponse = eval(parsedCommand+".execute(\""+args+"\")");
@@ -159,7 +161,7 @@ Flowd.start = (function() {
 			res.on('end', function(err, data) {
 				if(err){
 					// console.log("err on end: "+err);
-				} 	else if (data) {
+				} else if (data) {
 					// console.log("data on end: "+ data);
 				}
 			});
