@@ -4,14 +4,25 @@ https = require('https');
 fs = require('fs');
 jq = require('jquery');
 exec = require('child_process').exec;
-var flowName = flowName || "marttest";
-if(!Flowd){
-	var Flowd = {};
-}
-//read config
-eval(fs.readFileSync('config.js').toString());
 
-Flowd.start = (function(flowName) {
+var Flowd = {};
+var config = {};
+
+//read config
+try {
+  if (fs.lstatSync('config.js')) {
+    eval(fs.readFileSync('config.js').toString());
+  }
+} catch(e) {
+}
+config.username = process.env.FLOWD_USERNAME || config.username;
+config.password = process.env.FLOWD_PASSWORD || config.password;
+config.flowname = process.env.FLOWD_FLOWNAME || config.flowname || 'flowd';
+config.messageHost = process.env.FLOWD_MESSAGE_HOST || config.messageHost;
+config.updateInterval = config.updateInterval || 3000;
+config.syntaxErrorMessage = config.syntaxErrorMessage || 'Huh?';
+
+Flowd.start = (function() {
 	var commands = "";
 	availableCommands = [];
 	var sessionOptions = {
@@ -24,13 +35,12 @@ Flowd.start = (function(flowName) {
 		}
 	}
 	
-	var messageOptions = config.messageOptions;
 	var cookie;
 	var updateInterval = config.updateInterval;
 	var last_sent_at = new Date().getTime();
 
 	// evaluate commands from file
-	var files = fs.readdirSync(config.commandPath);
+	var files = fs.readdirSync('commands');
 	
 	for(var i = 0;i < files.length; i++){
 		file = files[i];
@@ -61,7 +71,7 @@ Flowd.start = (function(flowName) {
 		setInterval(function(){
 			// console.log("polling");
 			getMessages(cookie);
-		}, updateInterval);
+		}, process.env.UPDATE_INTERVAL || config.updateInterval || 3000);
 	};
 
 	var availableCommand = function(c){
@@ -72,9 +82,9 @@ Flowd.start = (function(flowName) {
 			var refreshTime = new Date().getTime();
 			var totalData = "";
 			var getMessageOptions = {
-				host: messageOptions['host'],
+				host: process.env.MESSAGE_HOST || config.messageHost,
 				port: 443,
-				path: '/flows/'+config.flowName+'/apps/chat/messages?count=1&after_time='+last_sent_at,
+				path: '/flows/' + config.flowname + '/apps/chat/messages?count=1&after_time='+last_sent_at,
 				method: 'GET',
 				headers: {"Cookie": cookie}
 			};
@@ -117,7 +127,7 @@ Flowd.start = (function(flowName) {
 				}
 				continue;
 			} else if (match) {
-				postMessage(config.syntax_error_message, cookie);
+				postMessage(config.syntaxErrorMessage, cookie);
 			}
 		}
 		return callback();
@@ -126,7 +136,7 @@ Flowd.start = (function(flowName) {
 	var postMessage = function(message, cookie){
 		var postBody = {
 			app: "chat",
-			channel: "/flows/" +flowName ,
+			channel: "/flows/" +config.flowname,
 			"event": "message",
 			message: "\""+message+"\"",
 			"private": "false",
@@ -134,7 +144,7 @@ Flowd.start = (function(flowName) {
 		};
 		
 		var options = {
-			host: messageOptions['host'],
+			host: config.messageHost,
 			port: 443,
 			path: '/messages',
 			method: 'POST',
@@ -169,4 +179,4 @@ Flowd.start = (function(flowName) {
 	auth();
 });
 
-Flowd.start(config.flowName);
+Flowd.start();
