@@ -69,7 +69,6 @@ Flowd.start = (function() {
 	//this is the main loop
 	var pollForMessages = function(){
 		setInterval(function(){
-			// console.log("polling");
 			getMessages();
 		}, process.env.UPDATE_INTERVAL || config.updateInterval || 3000);
 	};
@@ -94,7 +93,6 @@ Flowd.start = (function() {
 				});
 				res2.on('end', function(){
 					b = JSON.parse(totalData);
-					// console.log(b);
 					parseMessages(b, function(){
 						return;
 					});
@@ -156,16 +154,12 @@ Flowd.start = (function() {
 		var req = https.request(options, function(res) {
 			res.on('end', function(err, data) {
 				if(err){
-					// console.log("err on end: "+err);
 				} else if (data) {
-					// console.log("data on end: "+ data);
 				}
 			});
 			res.on('data', function(err, data) {
 				if(err){
-					// console.log("err on data: "+err);
 				} else if (data) {
-					// console.log("data on data: "+ data);
 				}
 			});
 
