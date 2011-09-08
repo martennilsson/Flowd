@@ -3,7 +3,7 @@ querystring = require('querystring');
 https = require('https');
 fs = require('fs');
 exec = require('child_process').exec;
-require.paths.unshift('.')
+jsdom = require('jsdom').jsdom;
 
 var Flowd = {};
 
