@@ -1,13 +1,8 @@
 var config = {
-	commandPath: "commands",
-	updateInterval: 3000,
-	username: "bot@example.com",
-	password: "",
-	flowName: "<nameOfTheFlow>",
-	syntax_error_message: "mm?",
-	
-	messageOptions: {
-		host: '<yourdomain>.flowdock.com',
-	}
-	
+  updateInterval: 3000,
+  username: "bot@example.com",
+  password: "secret",
+  flowname: "<nameOfTheFlow>",
+  syntaxErrorMessage: "Huh?",
+  messageHost: '<yourdomain>.flowdock.com'
 };
