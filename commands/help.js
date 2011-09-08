@@ -1,3 +1,3 @@
-this.execute = function(args){
-	return "commands: "+  availableCommands.join(", ");
+this.execute = function(args, callback){
+	callback("commands: "+  availableCommands.join(", "));
 };

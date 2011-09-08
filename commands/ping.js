@@ -1,3 +1,3 @@
-this.execute = function(args){
-	return "pong " + args;
+this.execute = function(args, callback){
+	callback("pong " + args);
 };

@@ -67,7 +67,7 @@ Flowd.start = (function() {
 	};
 	
 	//this is the main loop
-	var pollForMessages = function (cookie){
+	var pollForMessages = function(){
 		setInterval(function(){
 			// console.log("polling");
 			getMessages(cookie);
@@ -122,20 +122,20 @@ Flowd.start = (function() {
                     args = match[2];
                 }
 				var parsedCommand = match[1];
-				// console.log("parsedCommand: <"+parsedCommand+ "> with args: '"+args+"'");
-				botResponse = eval(parsedCommand+".execute(\""+args+"\")");
-				if(botResponse){
-					postMessage(botResponse, cookie);
-				}
+				//botResponse = eval(parsedCommand+".execute(\""+args+"\")");
+				//if(botResponse){
+				//	postMessage(botResponse, cookie);
+				//}
+        eval(parsedCommand+".execute(\""+args+"\", postMessage)")
 				continue;
 			} else if (match) {
-				postMessage(config.syntaxErrorMessage, cookie);
+				postMessage(config.syntaxErrorMessage);
 			}
 		}
 		return callback();
 	};
 	
-	var postMessage = function(message, cookie){
+	var postMessage = function(message){
 		var postBody = {
 			app: "chat",
 			channel: "/flows/" +config.flowname,

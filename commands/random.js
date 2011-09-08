@@ -1,8 +1,8 @@
-this.execute = function(args){
+this.execute = function(args, callback){
   if(isNaN(args)) {
-    return "That's not a number!";
+    callback("That's not a number!");
   } else {
-    return Math.round(Math.random()*args);
+    callback(Math.round(Math.random()*args));
   }
 };
 
