@@ -122,10 +122,6 @@ Flowd.start = (function() {
                     args = match[2];
                 }
 				var parsedCommand = match[1];
-				//botResponse = eval(parsedCommand+".execute(\""+args+"\")");
-				//if(botResponse){
-				//	postMessage(botResponse, cookie);
-				//}
         eval(parsedCommand+".execute(\""+args+"\", postMessage)")
 				continue;
 			} else if (match) {
