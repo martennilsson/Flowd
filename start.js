@@ -2,7 +2,6 @@ require.paths.unshift('commands');
 querystring = require('querystring');
 https = require('https');
 fs = require('fs');
-jq = require('jquery');
 exec = require('child_process').exec;
 
 var Flowd = {};
