@@ -22,7 +22,7 @@ Flowd.start = (function(flowName) {
 		headers:{
 			"Connection": "keep-alive"
 		}
-	},
+	}
 	
 	var messageOptions = config.messageOptions;
 	var cookie;
