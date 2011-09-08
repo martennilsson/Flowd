@@ -3,16 +3,17 @@ querystring = require('querystring');
 https = require('https');
 fs = require('fs');
 exec = require('child_process').exec;
+require.paths.unshift('.')
 
 var Flowd = {};
-var config = {};
 
 //read config
 try {
   if (fs.lstatSync('config.js')) {
-    eval(fs.readFileSync('config.js').toString());
+    var config = require('./config');
   }
 } catch(e) {
+  var config = {};
 }
 config.username = process.env.FLOWD_USERNAME || config.username;
 config.password = process.env.FLOWD_PASSWORD || config.password;
