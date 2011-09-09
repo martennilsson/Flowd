@@ -8,23 +8,22 @@ jsdom = require('jsdom').jsdom;
 
 var Flowd = {};
 
-//read config
-try {
-  if (fs.lstatSync('config.js')) {
-    var config = require('./config');
-  }
-} catch(e) {
-  var config = {};
-}
-config.username = process.env.FLOWD_USERNAME || config.username;
-config.password = process.env.FLOWD_PASSWORD || config.password;
-config.flowname = process.env.FLOWD_FLOWNAME || config.flowname || 'flowd';
-config.messageHost = process.env.FLOWD_MESSAGE_HOST || config.messageHost;
-config.updateInterval = config.updateInterval || 3000;
-config.syntaxErrorMessage = config.syntaxErrorMessage || 'Huh?';
-
 Flowd.start = (function() {
-	availableCommands = {};
+  // require config
+  try {
+    if (fs.lstatSync('config.js')) {
+      var config = require('./config');
+    }
+  } catch(e) {
+    var config = {};
+  }
+  config.username = process.env.FLOWD_USERNAME || config.username;
+  config.password = process.env.FLOWD_PASSWORD || config.password;
+  config.flowname = process.env.FLOWD_FLOWNAME || config.flowname || 'flowd';
+  config.messageHost = process.env.FLOWD_MESSAGE_HOST || config.messageHost;
+  config.updateInterval = config.updateInterval || 3000;
+  config.syntaxErrorMessage = config.syntaxErrorMessage || 'Huh?';
+
 	var sessionOptions = {
 		host: 'www.flowdock.com',
 		port: 443,
@@ -40,8 +39,8 @@ Flowd.start = (function() {
 	var last_sent_at = new Date().getTime();
 
 	// evaluate commands from file
+	var availableCommands = {};
 	var files = fs.readdirSync('commands');
-	
 	for(var i = 0;i < files.length; i++){
 		file = files[i];
 		if (file.match(/\.js$/)){
@@ -64,7 +63,7 @@ Flowd.start = (function() {
 		});
 	};
 	
-	//this is the main loop
+	// this is the main loop
 	var pollForMessages = function(){
 		setInterval(function(){
 			getMessages();
@@ -94,7 +93,6 @@ Flowd.start = (function() {
 			});
 			req2.end();
 	};
-
 
 	var parseMessages = function (json, callback) {
 		for(var i = 0; i < json.length; i++){
@@ -154,7 +152,6 @@ Flowd.start = (function() {
 				} else if (data) {
 				}
 			});
-
 		});
 		req.write(querystring.stringify(postBody));
 		req.end();
