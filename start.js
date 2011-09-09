@@ -103,16 +103,29 @@ Flowd.start = (function() {
 				return;
 			}
 			var match = message.content.match(/^Flowd,?\s(\w*)\s?(.*)/i);
-			if(match && match.length > 1 && availableCommands[match[1]]){
-				var args = "";
-				if (match.length > 2) {
-          args = match[2];
+			if(match && match.length > 1) {
+        if(match[1] == 'help') {
+          msg = "    Commands:\n";
+          for(var cmd in availableCommands) {
+            if(availableCommands.hasOwnProperty(cmd)) {
+              if(availableCommands[cmd].help)
+                msg += "    " + cmd + " - " + availableCommands[cmd].help + "\n"
+              else
+                msg += "    " + cmd + "\n";
+            }
+          }
+          postMessage(msg);
+        } else if(availableCommands[match[1]]) {
+          var args = "";
+          if (match.length > 2) {
+            args = match[2];
+          }
+          availableCommands[match[1]].execute(args, postMessage);
+          continue;
+        } else {
+          postMessage(config.syntaxErrorMessage);
         }
-        availableCommands[match[1]].execute(args, postMessage);
-				continue;
-			} else if (match) {
-				postMessage(config.syntaxErrorMessage);
-			}
+      }
 		}
 	};
 	

@@ -1,3 +1,4 @@
+exports.help = "get lunch menu from <restaurant>, available: ringos";
 exports.execute = function(place, callback){
 	if (place == "ringos") {
 		jsdom.env("http://www.ringosbistro.se/lunch.php", [
