@@ -1,4 +1,4 @@
-this.execute = function(arg){
+exports.execute = function(arg){
 	if (arg){
 		exec('say '+arg);
 	}

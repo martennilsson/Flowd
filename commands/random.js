@@ -1,4 +1,4 @@
-this.execute = function(args, callback){
+exports.execute = function(args, callback){
   if(isNaN(args)) {
     callback("That's not a number!");
   } else {

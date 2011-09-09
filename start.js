@@ -24,8 +24,7 @@ config.updateInterval = config.updateInterval || 3000;
 config.syntaxErrorMessage = config.syntaxErrorMessage || 'Huh?';
 
 Flowd.start = (function() {
-	var commands = "";
-	availableCommands = [];
+	availableCommands = {};
 	var sessionOptions = {
 		host: 'www.flowdock.com',
 		port: 443,
@@ -45,13 +44,11 @@ Flowd.start = (function() {
 	
 	for(var i = 0;i < files.length; i++){
 		file = files[i];
-		if (file.match(/\.js/)){
-			command = file.replace(/\.js/, "");
-			availableCommands.push(command);
-			commands += "var "+command + "= require('"+command+"');";
+		if (file.match(/\.js$/)){
+			command = file.replace(/\.js$/, "");
+			availableCommands[command] = require(command);
 		}
 	}
-	eval(commands);
 		
 	var auth = function(){
 		var params = querystring.stringify({'user_session[email]': config.username,  'user_session[password]': config.password});
@@ -74,10 +71,6 @@ Flowd.start = (function() {
 		}, process.env.UPDATE_INTERVAL || config.updateInterval || 3000);
 	};
 
-	var availableCommand = function(c){
-		return (availableCommands.indexOf(c) >= 0);
-	};
-	
 	var getMessages = function() {
 			var refreshTime = new Date().getTime();
 			var totalData = "";
@@ -113,15 +106,13 @@ Flowd.start = (function() {
 			if (message.event != 'message'){
 				return;
 			}
-			var match = message.content.match(/^Bot,?\s(\w*)\s?(.*)/i);
-			// console.log("match: "+match);
-			if(match && match.length > 1 && availableCommand(match[1])){
+			var match = message.content.match(/^jBot,?\s(\w*)\s?(.*)/i);
+			if(match && match.length > 1 && availableCommands[match[1]]){
 				var args = "";
 				if (match.length > 2) {
-                    args = match[2];
-                }
-				var parsedCommand = match[1];
-        eval(parsedCommand+".execute(\""+args+"\", postMessage)")
+          args = match[2];
+        }
+        availableCommands[match[1]].execute(args, postMessage);
 				continue;
 			} else if (match) {
 				postMessage(config.syntaxErrorMessage);

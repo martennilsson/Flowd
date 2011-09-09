@@ -1,4 +1,4 @@
-this.execute = function(arg){
+exports.execute = function(arg){
 	if (arg == "next"){
 		exec("osascript -e 'tell application \"Spotify\" to next track'");
 	}
