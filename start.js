@@ -86,9 +86,7 @@ Flowd.start = (function() {
 				});
 				res2.on('end', function(){
 					b = JSON.parse(totalData);
-					parseMessages(b, function(){
-						return;
-					});
+					parseMessages(b);
 				});
 			});
 			req2.end();
@@ -116,7 +114,6 @@ Flowd.start = (function() {
 				postMessage(config.syntaxErrorMessage);
 			}
 		}
-		return callback();
 	};
 	
 	var postMessage = function(message){
