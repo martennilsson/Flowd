@@ -9,13 +9,13 @@ jsdom = require('jsdom').jsdom;
 var Flowd = {};
 
 Flowd.start = (function() {
+  var config = {};
   // require config
   try {
     if (fs.lstatSync('config.js')) {
-      var config = require('./config');
+      config = require('./config');
     }
   } catch(e) {
-    var config = {};
   }
   config.username = process.env.FLOWD_USERNAME || config.username;
   config.password = process.env.FLOWD_PASSWORD || config.password;
@@ -109,7 +109,7 @@ Flowd.start = (function() {
           for(var cmd in availableCommands) {
             if(availableCommands.hasOwnProperty(cmd)) {
               if(availableCommands[cmd].help)
-                msg += "    " + cmd + " - " + availableCommands[cmd].help + "\n"
+                msg += "    " + cmd + " - " + availableCommands[cmd].help + "\n";
               else
                 msg += "    " + cmd + "\n";
             }

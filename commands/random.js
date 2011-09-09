@@ -1,4 +1,4 @@
-exports.help = "get random number from 0 to <max>"
+exports.help = "get random number from 0 to <max>";
 exports.execute = function(args, callback){
   if(args === "") {
     callback("Please provide a max random number");

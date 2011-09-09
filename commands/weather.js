@@ -6,4 +6,4 @@ exports.execute = function(args, callback) {
     var response = window.$('current_observation weather').text() + ", " + window.$('current_observation temp_c').text() + "°C, relative humidity: " + window.$('current_observation relative_humidity').text();
     callback(response);
   });
-}
+};
