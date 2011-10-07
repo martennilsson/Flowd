@@ -1,10 +1,10 @@
 require.paths.unshift('commands');
 querystring = require('querystring');
-https = require('https');
 fs = require('fs');
 exec = require('child_process').exec;
 require.paths.unshift('.');
 jsdom = require('jsdom').jsdom;
+flowdock = require('flowdock');
 
 var Flowd = {};
 
@@ -33,8 +33,7 @@ Flowd.start = (function() {
 			"Connection": "keep-alive"
 		}
 	};
-	
-	var cookie;
+
 	var updateInterval = config.updateInterval;
 	var last_sent_at = new Date().getTime();
 
@@ -48,48 +47,11 @@ Flowd.start = (function() {
 			availableCommands[command] = require(command);
 		}
 	}
-		
-	var auth = function(){
-		var params = querystring.stringify({'user_session[email]': config.username,  'user_session[password]': config.password});
-		var req = https.request(sessionOptions, function(res) {
-			res.on("end", function(){
-				cookie = res.headers['set-cookie'];
-				pollForMessages(cookie);
-			});
-		});
-		req.end(params);
-		req.on('error', function(e) {
-			console.error(e);
-		});
-	};
-	
 	// this is the main loop
 	var pollForMessages = function(){
 		setInterval(function(){
 			getMessages();
 		}, process.env.UPDATE_INTERVAL || config.updateInterval || 3000);
-	};
-
-	var getMessages = function() {
-			var refreshTime = new Date().getTime();
-			var totalData = "";
-			var getMessageOptions = {
-				host: process.env.MESSAGE_HOST || config.messageHost,
-				port: 443,
-				path: '/flows/' + config.flowname + '/apps/chat/messages?count=1&after_time='+last_sent_at,
-				method: 'GET',
-				headers: {"Cookie": cookie}
-			};
-			var req2 = https.request(getMessageOptions, function(res2) {
-				res2.on('data', function(d) {
-					totalData = totalData + d.toString("utf8");
-				});
-				res2.on('end', function(){
-					b = JSON.parse(totalData);
-					parseMessages(b);
-				});
-			});
-			req2.end();
 	};
 
 	var parseMessages = function (json, callback) {
@@ -130,44 +92,15 @@ Flowd.start = (function() {
 	};
 	
 	var postMessage = function(message){
-		var postBody = {
-			app: "chat",
-			channel: "/flows/" +config.flowname,
-			"event": "message",
-			message: '"' + message.replace(/\n/g, '\\n').replace(/\r/g, '') + '"',
-			"private": "false",
-			tags: ""
-		};
-		
-		var options = {
-			host: config.messageHost,
-			port: 443,
-			path: '/messages',
-			method: 'POST',
-			headers: {
-				"Cookie": cookie, 
-				"Content-Type": "application/x-www-form-urlencoded"
-			}
-		};
-		
-
-		var req = https.request(options, function(res) {
-			res.on('end', function(err, data) {
-				if(err){
-				} else if (data) {
-				}
-			});
-			res.on('data', function(err, data) {
-				if(err){
-				} else if (data) {
-				}
-			});
-		});
-		req.write(querystring.stringify(postBody));
-		req.end();
+		session.chatMessage(config.messageHost.split(".")[0], config.flowname, message);
 	};
+
 	//this starts the whole process
-	auth();
+	var session = new flowdock.Session(config.username, config.password);
+	session.subscribe(config.messageHost.split(".")[0], config.flowname);
+	session.on("message", function(message) {
+		parseMessages([message]);
+	});
 });
 
 Flowd.start();
