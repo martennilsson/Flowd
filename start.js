@@ -13,7 +13,7 @@ Flowd.start = (function() {
   // require config
   try {
     if (fs.lstatSync('config.js')) {
-      config = require('./config');
+      config = require('./config').config;
     }
   } catch(e) {
   }
