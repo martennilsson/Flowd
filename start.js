@@ -3,7 +3,6 @@ querystring = require('querystring');
 fs = require('fs');
 exec = require('child_process').exec;
 require.paths.unshift('.');
-jsdom = require('jsdom').jsdom;
 flowdock = require('flowdock');
 
 var Flowd = {};

@@ -2,7 +2,6 @@
   "name": "flowd",
   "version": "0.0.1",
   "dependencies": {
-	"jsdom": "0.2.4",
 	"flowdock": "0.1.0"
   }
 }
